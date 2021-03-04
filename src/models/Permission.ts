@@ -7,7 +7,7 @@ export class Permission {
     @PrimaryColumn()
     id: string;
 
-    @Column()
+    @Column({ unique: true})
     name: string;
 
     @Column()

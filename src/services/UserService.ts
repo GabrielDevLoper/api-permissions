@@ -1,6 +1,7 @@
 import { UserRepository } from "../repositories/UserRepository";
 import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
+import { AppError } from "../errors/AppError";
 
 class UserService {
     async index(req: Request, res: Response) {
@@ -11,6 +12,14 @@ class UserService {
         const { name, email, password } = req.body;
 
         const userRepository = getCustomRepository(UserRepository);
+
+        const userAlreadyExist = await userRepository.findOne({
+            email
+        });
+
+        if(userAlreadyExist){
+            throw new AppError("User already exists", 400);
+        }
 
         const user = userRepository.create({
             name,

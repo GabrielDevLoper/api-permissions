@@ -1,18 +1,23 @@
-import {Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm";
 import { v4 as uuid } from "uuid";
+import { hash } from "bcryptjs";
+import { IsEmail, IsNotEmpty,  } from "class-validator";
 
 @Entity("users")
 class User {
 
     @PrimaryColumn()
-    readonly id: string;
+    id: string;
 
     @Column()
+    @IsNotEmpty({message: "Nome é obrigatório"})
     name: string;
 
     @Column({
-        unique: true
+        unique: true,
     })
+    @IsEmail({}, {message: "Email incorreto!"})
+    @IsNotEmpty({message: "O email é obrigatório"})
     email: string;
 
     @Column()
@@ -29,10 +34,17 @@ class User {
     @UpdateDateColumn()
     updated_at: Date;
 
-    constructor(){
-        if(!this.id){
-            this.id = uuid();
-        }
+    
+    @BeforeInsert()
+    generatedUuid(){
+        this.id = uuid();
+    }
+
+
+    @BeforeInsert()
+    @BeforeUpdate()
+    async passwordHash(){
+        this.password = await hash(this.password, 8);
     }
 }
 

@@ -2,6 +2,7 @@ import { UserRepository } from "../repositories/UserRepository";
 import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import { AppError } from "../errors/AppError";
+import { validate } from "class-validator";
 
 class UserService {
     async index(req: Request, res: Response) {
@@ -26,6 +27,13 @@ class UserService {
             email,
             password
         });
+
+        const errors = await validate(user);
+
+        if(errors.length != 0){
+            const validator = errors.map(error => error.constraints)
+            return res.json(validator);
+        }
 
         await userRepository.save(user);
 

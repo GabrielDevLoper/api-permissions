@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import { AppError } from "../errors/AppError";
 import { validate } from "class-validator";
+import { RoleRepository } from "../repositories/RoleRepository";
 
 class UserService {
     async index(req: Request, res: Response) {
@@ -10,9 +11,10 @@ class UserService {
     }
 
     async store(req: Request, res: Response){
-        const { name, email, password } = req.body;
+        const { name, email, password, roles } = req.body;
 
         const userRepository = getCustomRepository(UserRepository);
+        const roleRepository = getCustomRepository(RoleRepository);
 
         const userAlreadyExist = await userRepository.findOne({
             email
@@ -22,10 +24,13 @@ class UserService {
             throw new AppError("User already exists", 400);
         }
 
+        const existsRoles = await roleRepository.findByIds(roles);
+
         const user = userRepository.create({
             name,
             email,
-            password
+            password,
+            roles: existsRoles
         });
 
         const errors = await validate(user);

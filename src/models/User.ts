@@ -1,7 +1,8 @@
-import {BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn} from "typeorm";
+import {BeforeInsert, BeforeUpdate, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryColumn, UpdateDateColumn} from "typeorm";
 import { v4 as uuid } from "uuid";
 import { hash } from "bcryptjs";
 import { IsEmail, IsNotEmpty,  } from "class-validator";
+import { Role } from "./Role";
 
 @Entity("users")
 class User {
@@ -27,6 +28,14 @@ class User {
         default: false
     })
     status: boolean;
+
+    @ManyToMany(() => Role)
+    @JoinTable({
+        name: "users_roles",
+        joinColumns: [{name:"id_user"}],
+        inverseJoinColumns: [{name: "id_role"}]
+    })
+    roles: Role[];
 
     @CreateDateColumn()
     created_at: Date;

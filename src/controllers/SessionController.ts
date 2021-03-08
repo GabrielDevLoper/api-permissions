@@ -13,7 +13,11 @@ class SessionController {
 
         const user = await userRepository.findOne({
             email
-        });
+        },
+        {
+            relations: ["roles"]
+        }
+        );
 
         if(!user){
             throw new AppError("User not found", 404);
@@ -25,7 +29,9 @@ class SessionController {
             throw new AppError("Incorrect password or email", 400);
         }
 
-        const token = sign({}, process.env.TOKEN_SECRET, {
+        const roles = user.roles.map(roles => roles.name);
+
+        const token = sign({ roles }, process.env.TOKEN_SECRET, {
             subject: user.id,
             expiresIn: "1d"
         });

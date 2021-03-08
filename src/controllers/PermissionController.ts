@@ -4,6 +4,14 @@ import { AppError } from "../errors/AppError";
 import { PermissionRepository } from "../repositories/PermissionRepository";
 
 class PermissionController {
+    async index(req: Request, res: Response) {
+        const permissionRepository = getCustomRepository(PermissionRepository);
+
+        const permissions = await permissionRepository.find();
+
+        return res.json(permissions);
+    }
+
     async store(req: Request, res: Response){
         const { name, description } = req.body;
 

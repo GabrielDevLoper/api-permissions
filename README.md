@@ -1,10 +1,10 @@
 [X] Cadastro de usuários -> users
-[] Autenticação dos usuários
+[x] Autenticação dos usuários
 [X] Cadastro de permissões -> permissions
-[] Cadastro de roles
-[] Cadastro de Produtos -> products
-[] Conexão de users_roles
-[] Conexão de permission_roles
+[x] Cadastro de roles
+[x] Cadastro de Produtos -> products
+[x] Conexão de users_roles
+[x] Conexão de permission_roles
 
 ## Tecnologias utilizadas para desenvolver esta api
 
